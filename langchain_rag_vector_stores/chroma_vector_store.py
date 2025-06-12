@@ -36,3 +36,41 @@ vector_store = Chroma(
 # add documents
 vector_store.add_documents(docs)
 
+# view documents
+vector_store.get(include=['embeddings','documents','metadatas'])
+
+# search documents
+vector_store.similarity_search(
+    query="Who among these are a bowler?",
+    k=2  # number of similar results we want
+)
+
+# search with similarity score
+vector_store.similarity_search_with_score(
+    query="Who among these are a bowler?",
+    k=2
+)
+
+# meta data filtering
+vector_store.similarity_search_with_score(
+    query="",
+    filter={"team": "Chennai Super Kings"}
+)
+
+# update documents
+updated_doc = Document(
+    page_content="Ravindra Jadeja is a dynamic all-rounder who contributes with both bat and ball. Representing Chennai Super Kings, his quick fielding and match-winning performances make him a key player.",
+    metadata={"team": "Chennai Super Kings"}
+)
+vector_store.update_documents(document_id='enter embedded vector id here',document=updated_doc)
+
+
+# view documents
+vector_store.get(include=['embeddings','documents','metadatas'])
+
+# delete document
+vector_store.delete(ids=["enter embedded vector id here"])
+
+
+
+
