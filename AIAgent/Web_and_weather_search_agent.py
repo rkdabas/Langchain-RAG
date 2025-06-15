@@ -17,6 +17,17 @@ search_tool = DuckDuckGoSearchRun()
 results = search_tool.invoke("What happended to AirIndia flight 812?")
 # print(results)
 
+# Weather tool
+@tool
+def get_weather_data(city: str) -> str:
+  """
+  This function fetches the current weather data for a given city
+  """
+  url = f'https://api.weatherstack.com/current?access_key=4d1d8ae207a8c845a52df8a67bf3623e&query={city}'
+  response = requests.get(url)
+  return response.json()
+
+
 # LLM
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash",temperature=0)
 
@@ -28,18 +39,18 @@ prompt = hub.pull("hwchase17/react")
 # Step3: Create the ReAct agent manually with the pulled prompt
 agent = create_react_agent(
     llm=llm,
-    tools=[search_tool],
+    tools=[search_tool, get_weather_data],
     prompt=prompt
 )
 
 # Step4: Create the AgentExecutor
 agent_executor = AgentExecutor(
     agent=agent,
-    tools=[search_tool],
+    tools=[search_tool, get_weather_data],
     verbose=True
 )
 
 # Step5: Run the AgentExecutor
-result = agent_executor.invoke({"input":"What are the best ways to reach london from delhi."})
+result = agent_executor.invoke({"input": "Find the capital of Madhya Pradesh, then find it's current weather condition"})
 print(result)
 print(result["output"])
